@@ -1,0 +1,15 @@
+{
+  "name": "Chat-CLI",
+  "version": "1.0.0",
+  "description": "chat cli",
+  "main": "index.js",
+  "repository": "git@github.com:BeAce/Chat-CLI.git",
+  "author": "BeAce <beaceshimin@gmail.com>",
+  "license": "MIT",
+  "private": false,
+  "dependencies": {
+    "commander": "^2.12.0",
+    "node-notifier": "^5.1.2",
+    "shelljs": "^0.7.8"
+  }
+}
