@@ -1,0 +1,69 @@
+<!Doctype html>
+<html>
+  <head>
+    <title>Socket.IO chat</title>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      body { font: 13px Helvetica, Arial; }
+      form { background: #000; padding: 3px; position: fixed; bottom: 0; width: 100%; }
+      form input { border: 0; padding: 10px; width: 90%; margin-right: .5%; }
+      form button { width: 9%; background: rgb(130, 224, 255); border: none; padding: 10px; }
+      #messages { list-style-type: none; margin: 0; padding: 0; }
+      #messages li { padding: 5px 10px; }
+      #messages li:nth-child(odd) { background: #eee; }
+      #userform {bottom: 50px;}
+      #messages {
+        display: flex;
+        flex-direction: column;
+      }
+      #messages li.left {
+        align-self: flex-start;
+      }
+      #messages li.right {
+        align-self: flex-end;
+      }
+    </style>
+  </head>
+  <body>
+    <div>当前在线<span id="number">0</span>人</div>
+    <p>当前用户</p>
+    <ul id="user-list"></ul>
+    <ul id="messages"></ul>
+    <form id="userform" action="">
+      <input type="text" id="username" name="username" />
+      <button>login</button>
+    </form>
+    <form id="typeform" action="">
+      <input id="m" autocomplete="off" /><button>Send</button>
+    </form>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
+    <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+    <script>
+    $(function () {
+      var socket = io();
+      $('#userform').submit(() => {
+        socket.emit('add user', $('#username').val());
+        localStorage.setItem('username', $('#username').val());
+        $('#userform').hide()
+        return false;
+      });
+
+      $('#typeform').submit(function(){
+        socket.emit('new message', $('#m').val());
+        $('#m').val('');
+        return false;
+      });
+
+      socket.on('user joined', msg => {
+        $('#user-list').append($('<li>').text(`${msg.username}加入了群聊`));
+        $('#number').text(msg.numUsers);
+      });
+
+      socket.on('new message', msg => {
+        const username = localStorage.getItem('username');
+        $('#messages').append($(`<li class="${msg.username === username ? 'right' : 'left'}">`).text(`${msg.username}: ${msg.message}`));
+      });
+    });
+    </script>
+  </body>
+</html>
